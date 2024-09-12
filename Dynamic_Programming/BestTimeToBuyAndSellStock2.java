@@ -37,9 +37,9 @@ Constraints:
     int[][] dp;
      public int maxProfit(int[] prices) {
         
-     dp=new int[prices.length+1][2];
+     /*dp=new int[prices.length+1][2];*/
     
-     return solveTab(prices,dp);    
+     return SO(prices);    
      }
      public int solveTab(int[] nums,int[][] dp){
       for(int i=nums.length-1;i>=0;i--){
@@ -58,7 +58,29 @@ Constraints:
       }
      return dp[0][1];
      }
-     public int solveMem(int[] nums,int buy,int i){
+     public int SO(int[] nums){
+     int[] curr=new int[2];
+     int[] prev=new int[2];
+       for(int i=nums.length-1;i>=0;i--){
+          for(int j=1;j>=0;j--){
+           int p1=0,p2=0,p3=0,p4=0;
+         if(j==1){
+             p1=-nums[i]+prev[0];
+             p2=0+prev[j];
+         }
+         else{
+         p3=nums[i]+prev[1];
+         p4=0+prev[j];
+         }
+         curr[j]=(int)(Math.max(Math.max(p1,p2),Math.max(p3,p4)));   
+          }
+          prev=curr;
+           curr=new int[2];
+      }
+     return prev[1];   
+     }
+     // maxPro represents memoization
+     public int maxPro(int[] nums,int buy,int i){
          if(i>=nums.length){
              return 0;
          }
@@ -67,12 +89,12 @@ Constraints:
          }
          int p1=0,p2=0,p3=0,p4=0;
          if(buy==1){
-             p1=-nums[i]+solveMem(nums,0,i+1);
-             p2=0+solveMem(nums,1,i+1);
+             p1=-nums[i]+maxPro(nums,0,i+1);
+             p2=0+maxPro(nums,1,i+1);
          }
          else{
-         p3=nums[i]+solveMem(nums,1,i+1);
-         p4=0+solveMem(nums,buy,i+1);
+         p3=nums[i]+maxPro(nums,1,i+1);
+         p4=0+maxPro(nums,buy,i+1);
          }
          dp[i][buy]=(int)(Math.max(Math.max(p1,p2),Math.max(p3,p4)));
          return dp[i][buy];
