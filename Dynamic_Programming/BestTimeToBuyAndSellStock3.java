@@ -31,3 +31,86 @@ Constraints:
 1 <= prices.length <= 105
 0 <= prices[i] <= 105
  */
+
+ class Solution {
+    int[][][] dp;
+    public int maxProfit(int[] prices) {
+    /*dp=new int[prices.length+1][2][3];
+    /*for(int i=0;i<dp.length;i++){
+        for(int j=0;j<dp[0].length;j++){
+        for(int k=0;k<dp[0][0].length;k++){
+            dp[i][j][k]=-1;  
+        }
+          
+        }
+    }*/
+    return solveSO(prices);    
+    }
+    public int solveSO(int[] nums){
+    int[][] prev=new int[2][3];
+    int[][] curr=new int[2][3];
+     for(int i=nums.length-1;i>=0;i--){
+    for(int j=0;j<=1;j++){
+     for(int k=1;k>=0;k-- ){
+     int p1=0,p2=0,p3=0,p4=0;
+        if(j==1){
+            p1=-nums[i]+prev[0][k];
+            p2=0+prev[j][k];
+        }
+        else{
+           p3=nums[i]+prev[1][k+1];
+          p4=0+prev[j][k];  
+        }
+        int a= (int)(Math.max(Math.max(p1,p2),Math.max(p3,p4)));
+        curr[j][k]=a;    
+     }   
+    }
+prev=curr;
+curr=new int[2][3];
+    }
+        return prev[1][0];   
+    }
+    public int solveTab(int[] nums){
+    for(int i=nums.length-1;i>=0;i--){
+    for(int j=0;j<=1;j++){
+     for(int k=1;k>=0;k-- ){
+     int p1=0,p2=0,p3=0,p4=0;
+        if(j==1){
+            p1=-nums[i]+dp[i+1][0][k];
+            p2=0+dp[i+1][j][k];
+        }
+        else{
+           p3=nums[i]+dp[i+1][1][k+1];
+          p4=0+dp[i+1][j][k];  
+        }
+        int a= (int)(Math.max(Math.max(p1,p2),Math.max(p3,p4)));
+        dp[i][j][k]=a;    
+     }   
+    }    
+    }
+        return dp[0][1][0];
+    }
+    public int solveMem(int[] nums,int i,int buy,int count){
+        if(i>=nums.length){
+            return 0;
+        }
+        if(count>=2){
+            return 0;
+        }
+        if(dp[i][buy][count]!=-1){
+            return dp[i][buy][count];
+        }
+        int p1=0,p2=0,p3=0,p4=0;
+        if(buy==1){
+            p1=-nums[i]+solveMem(nums,i+1,0,count);
+            p2=0+solveMem(nums,i+1,buy,count);
+        }
+        else{
+           p3=nums[i]+solveMem(nums,i+1,1,count+1);
+          p4=0+solveMem(nums,i+1,buy,count);  
+        }
+        int a= (int)(Math.max(Math.max(p1,p2),Math.max(p3,p4)));
+        dp[i][buy][count]=a;
+        return a;
+    }
+}
